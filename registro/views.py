@@ -13,9 +13,11 @@ from django.contrib.auth import authenticate,logout, login as auth_login
 from django.contrib.auth.decorators import login_required
 
 
-def index(request):
-    usuario = request.session.get('usuario',None)
-    return render(request,'index.html',{'nombre':"Duoc",'elementos':["one", "two", "three"],'postulantes':Postulante.objects.all()})
+@login_required(login_url='login')
+def cerrar_session(request):
+    del request.session['usuario']
+    logout(request)
+    return redirect('index')
 
 def registro(request):
     return render(request, 'formulario.html',{})
@@ -50,8 +52,7 @@ def login_iniciar(request):
     else:
         return redirect("login")
 
-@login_required(login_url='login')
-def cerrar_session(request):
-    del request.session['usuario']
-    logout(request)
-    return redirect('index')
+def index(request):
+    usuario = request.session.get('usuario',None)
+    return render(request,'index.html',{'nombre':"Duoc",'elementos':["one", "two", "three"],'postulantes':Postulante.objects.all()})
+
