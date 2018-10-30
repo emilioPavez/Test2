@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .models import Postulante
+from .models import Postulante, Perro
 from django.shortcuts import redirect
 
 # Create your views here.
@@ -34,6 +34,18 @@ def crear(request):
 
     postulante = Postulante(run=run, nombre=nombre, fecha=fecha, correo=correo, telefono=telefono, region=region, comuna=comuna, vivienda=vivienda)
     postulante.save()
+    
+    return render(request,'index.html')
+
+def crearperro(request):
+
+    imagenperro = request.FILE['imagenperro'].read()
+    nombreperro = request.POST.get('nombreperro','')
+    Descripción = request.POST.get('Descripción','')
+    Estado = request.POST.get('Estado','')
+   
+    perro = Perro(imagenperro=imagenperro, nombreperro=nombreperro, Descripción=Descripción, Razaperro=Razaperro, Estado=Estado)
+    perro.save()
     
     return render(request,'index.html')
     

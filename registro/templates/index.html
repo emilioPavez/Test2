@@ -160,7 +160,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Run</label>
-                        <input required type="text" class="form-control" name="run" placeholder="Ingrese Run 12345678-9">
+                        <input required type="text" class="form-control" name="run" placeholder="Ingrese Rut 12345678-9">
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -189,7 +189,22 @@
                         <input type="number" class="form-control" name="telefono" placeholder="Ingrese teléfono de contacto">
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="co     <form action="/registro/crearperro" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <label for="imagenperro">ImagenPerro</label>
+        <input type="file" class="form-control" name="imagenperro">
+        <label for="nombre">Nombre</label>
+        <input type="text" name="nombre" placeholder="nombre">
+        <label for="Razaperro">Raza</label>
+        <input type="text" name="Raza" placeholder="Raza">
+        <label for="Descripción">Descripción</label>
+        <input type="text" name="Descripción" placeholder="Descripción">
+        <label for="Estado">Estado</label>
+        <input type="text" name="Estado" placeholder="Estado">
+
+        <input type="submit" value="Guardar">
+    </form>l-md-4">
                     <div class="form-group">
                         <label for="region">Región</label>
                         <select required class="form-control" name="region" id="region">
@@ -266,6 +281,75 @@
                             <td>{{p.region}}</td>
                             <td>{{p.comuna}}</td>
                             <td>{{p.vivienda}}</td>
+                                
+                        </tr>
+                        {% endfor %}                  
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+                <div class="container">
+            <form action="{% url 'crearperro' %}" id="formulario" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <h1>Registro de Perro</h1>
+            <div class="row">
+                <input type="file" name="myfile" class="form-control" name="imagenperro">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Nombre Perro</label>
+                        <input required type="text" class="form-control" name="nombreperro" placeholder="ingrese nombre del perro">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Raza perro</label>
+                        <input required type="text" class="form-control" name="Razaperro" placeholder="Ingrese Raza predominante">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Descripción</label>
+                        <input required type="text" class="form-control" name="Descripción" >
+                    </div>
+                </div>
+            </div>
+         <div class="row">
+                <div class="col-md-4">
+                    <button type="reset" class="btn btn-danger btn-block">Limpiar</button>
+                </div>
+                <div class="col-md-4">
+                    <button type="button" class="btn btn-outline-info btn-block" id="ocultar">Ocultar</button>
+                </div>
+                <div class="col-md-4">
+                    <input type="submit" class="btn btn-success btn-block" value="Guardar">
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="container" >
+            <h2>Perros</h2>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Imagen</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Raza</th>
+                            <th scope="col">Descripción</th>
+                            <th scope="col">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in perro %}
+                        <tr>
+                            <th scope="row">{{p.imagenperro}}</th>
+                            <td>{{p.nombreperro}}</td>
+                            <td>{{p.Razaperro}}</td>
+                            <td>{{p.Descripción}}</td>
+                            <td>{{p.Estado}}</td>
                                 
                         </tr>
                         {% endfor %}                  
