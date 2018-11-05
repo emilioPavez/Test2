@@ -8,7 +8,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth import authenticate,logout, login as auth_login
 from django.contrib.auth.decorators import login_required
 
-
+#aqui vienen las vistas
 
 def index(request):
     usuario = request.session.get('usuario',None)
@@ -29,9 +29,9 @@ def crear(request):
     if postulante is None:
         postulante = Postulante(run=run, nombre=nombre, fecha=fecha, correo=correo, telefono=telefono, region=region, comuna=comuna, vivienda=vivienda, contrasenia= contrasenia)
         postulante.save()
-        return render(request,'index.html',{'mensaje':'El postulante fue registrado correctamente.'})
+        return render(request,'index.html',{'mensaje':'Creado.'})
     else:
-        return render(request,'index.html',{'mensaje':'El postulante ingresado ya esta registrado.'})
+        return render(request,'index.html',{'mensaje':'Ya esta registrado.'})
 
 
 def eliminar(request,id):
@@ -99,11 +99,11 @@ def login(request):
 def login_iniciar(request):
     run = request.POST.get('run','')
     contrasenia = request.POST.get('contrasenia','')
-    #user = authenticate(request,username=usuario, password=contrasenia)
+    user = authenticate(request,username=usuario, password=contrasenia)
     postulante = Postulante.objects.filter(run=run).filter(contrasenia=contrasenia)
 
     if postulante is not None:
-        #auth_login(request, user)
+        auth_login(request, user)
         request.session['usuario'] = postulante[0].nombre
         request.session['id'] = postulante[0].id
         return redirect("index")

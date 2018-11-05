@@ -14,7 +14,7 @@ urlpatterns = [
     path('login',views.login,name="login"),
     path('cerrarsession',views.cerrar_session,name="cerrar_session"),
     path('login/iniciar',views.login_iniciar,name="iniciar"),
-    path('login/recuperar',views.recuperar,name="recuperar"),
+    path('login/recover',views.recuperar,name="recuperar"),
     path('login/recuperado',views.recuperado,name="recuperado")
 ] # + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
