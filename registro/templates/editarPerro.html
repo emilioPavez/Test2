@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Editar Perro</title>
+        {% load static %}
+        <link rel="stylesheet" href="{% static "css/bootstrap.css" %}" type="text/css" >
+        <link rel="stylesheet" href="{% static "css/estilo.css" %}" type="text/css">
+    </head>
+    <body>
+        <!--Formulario Perro-->
+        <div class="container">
+            <h1>Registro de perro {{perro.nombre}}</h1>
+            <form action="/perro/editado/{{perro.id}}" id="formularioPerro" enctype="multipart/form-data" method="POST">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="foto">Fotografia</label>
+                        <input required type="file" class="form-control" value="/media/{{perro.foto}}" name="foto" id="foto" placeholder="Seleccione Fotografia">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Nombre</label>
+                        <input required type="text" class="form-control" value="{{perro.nombre}}" name="nombre" placeholder="Ingrese nombre">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Raza</label>
+                        <input required type="text" class="form-control" value="{{perro.raza}}" name="raza" placeholder="Ingrese Raza" >
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Descripción</label>
+                        <input required type="text" class="form-control" value="{{perro.descripcion}}" name="descripcion" placeholder="Ingrese Descripción">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Estado</label>
+                        <select required  class="form-control" name="estado">
+                            <option hidden value="{{perro.estado}}">{{perro.estado}}</option>
+                            <option value="Rescatado">Rescatado</option>
+                            <option value="Disponible">Disponible</option>
+                            <option value="Adoptado">Adoptado</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <button type="reset" class="btn btn-danger btn-block">Limpiar</button>
+                </div>
+                <div class="col-md-6">
+                    <input type="submit" class="btn btn-success btn-block" value="Guardar">
+                </div>
+            </div>
+            </form>
+        </div>
+        <!--Fin Formulario Perro-->
+    </body>
+</html>

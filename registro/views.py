@@ -1,26 +1,18 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .models import Postulante, Perro
+from .models import Postulante
+from .models import Perro
 from django.shortcuts import redirect
+from django.utils.decorators import method_decorator
 
-# Create your views here.
-
-
-#importar user
-from django.contrib.auth.models import User
-#sistema de autenticación 
 from django.contrib.auth import authenticate,logout, login as auth_login
 from django.contrib.auth.decorators import login_required
 
 
-@login_required(login_url='login')
-def cerrar_session(request):
-    del request.session['usuario']
-    logout(request)
-    return redirect('index')
 
-def registro(request):
-    return render(request, 'formulario.html',{})
+def index(request):
+    usuario = request.session.get('usuario',None)
+    return render(request,'index.html',{'n':1,'i':2,'postulantes':Postulante.objects.all(),'usuario':usuario,'perros':Perro.objects.all()})
 
 def crear(request):
     run = request.POST.get('run','')
@@ -31,40 +23,94 @@ def crear(request):
     region = request.POST.get('region','')
     comuna = request.POST.get('comuna','')
     vivienda = request.POST.get('tipoVivienda','')
-
-    postulante = Postulante(run=run, nombre=nombre, fecha=fecha, correo=correo, telefono=telefono, region=region, comuna=comuna, vivienda=vivienda)
-    postulante.save()
+    contrasenia = request.POST.get('contrasenia','')
     
-    return render(request,'index.html')
+    postulante = Postulante.objects.get(run=run)
+    if postulante is None:
+        postulante = Postulante(run=run, nombre=nombre, fecha=fecha, correo=correo, telefono=telefono, region=region, comuna=comuna, vivienda=vivienda, contrasenia= contrasenia)
+        postulante.save()
+        return render(request,'index.html',{'mensaje':'El postulante fue registrado correctamente.'})
+    else:
+        return render(request,'index.html',{'mensaje':'El postulante ingresado ya esta registrado.'})
 
-def crearperro(request):
 
-    imagenperro = request.FILE['imagenperro'].read()
-    nombreperro = request.POST.get('nombreperro','')
-    Descripción = request.POST.get('Descripción','')
-    Estado = request.POST.get('Estado','')
-   
-    perro = Perro(imagenperro=imagenperro, nombreperro=nombreperro, Descripción=Descripción, Razaperro=Razaperro, Estado=Estado)
+def eliminar(request,id):
+    postulante = Postulante.objects.get(pk = id)
+    postulante.delete()
+    return redirect('index')
+
+def recuperar(request):
+    return render(request, 'recover.html')
+
+def recuperado(request):
+    run = request.POST.get('run','')
+    contrasenia1 = request.POST.get('contrasenia','')
+    contrasenia2 = request.POST.get('contrasenia2','')  
+
+    if contrasenia1 == contrasenia2 :
+        postulante = Postulante.objects.get(run=run)
+        postulante.contrasenia = contrasenia1
+        postulante.save()
+        return render(request, 'login.html',{'contrasenia':'La password fue cambiada correctamente.'})
+    else:
+        return render(request, 'recover.html',{'contrasenia':'La password no coincide.'})
+    
+
+def eliminar_perro(request,id):
+    perro = Perro.objects.get(pk = id)
+    perro.delete()
+    return redirect('index')
+
+def crear_perro(request):
+    foto = request.FILES.get('foto',False)
+    nombre = request.POST.get('nombre','')
+    raza = request.POST.get('raza','')
+    descripcion = request.POST.get('descripcion','')
+    estado = request.POST.get('estado','')
+
+    perro = Perro(foto=foto,nombre=nombre,raza=raza,descripcion=descripcion,estado=estado)
     perro.save()
-    
-    return render(request,'index.html')
-    
+    return redirect('index')
+
+def editar_perro(request,id):
+    perro = Perro.objects.get(pk=id)
+    return render(request, 'editarPerro.html', {'perro':perro})
+
+def editado_perro(request,id):
+    perro = Perro.objects.get(pk=id)
+
+    foto = request.FILES.get('foto',False)
+    nombre = request.POST.get('nombre','')
+    raza = request.POST.get('raza','')
+    descripcion = request.POST.get('descripcion','')
+    estado = request.POST.get('estado','')
+
+    perro.foto = foto
+    perro.nombre = nombre
+    perro.raza = raza
+    perro.descripcion = descripcion
+    perro.estado = estado
+    perro.save()
+    return redirect('index')
+
 def login(request):
     return render(request,'login.html',{})
 
 def login_iniciar(request):
-    usuario = request.POST.get('nombre_usuario','')
-    contrasenia = request.POST.get('password','')
-    user = authenticate(request,username=usuario, password=contrasenia)
+    run = request.POST.get('run','')
+    contrasenia = request.POST.get('contrasenia','')
+    #user = authenticate(request,username=usuario, password=contrasenia)
+    postulante = Postulante.objects.filter(run=run).filter(contrasenia=contrasenia)
 
-    if user is not None:
-        auth_login(request, user)
-        request.session['usuario'] = user.first_name+" "+user.last_name
+    if postulante is not None:
+        #auth_login(request, user)
+        request.session['usuario'] = postulante[0].nombre
+        request.session['id'] = postulante[0].id
         return redirect("index")
     else:
-        return redirect("login")
+        return redirect("login",{'mensaje':'Las credenciales son incorrectas.'})
 
-def index(request):
-    usuario = request.session.get('usuario',None)
-    return render(request,'index.html',{'nombre':"Duoc",'elementos':["one", "two", "three"],'postulantes':Postulante.objects.all()})
+def cerrar_session(request):
+    del request.session['usuario']
+    return redirect('index')
 

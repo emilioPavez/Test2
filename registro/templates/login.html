@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+
+    <title>Inicio de sesión</title>
+
+    <!-- Bootstrap core CSS -->
+    {% load static %}
+        <link rel="stylesheet" href="{% static "css/bootstrap.css" %}" type="text/css" >
+
+    <!-- Custom styles for this template -->
+    <link href="{% static "css/signin.css" %}" rel="stylesheet" type="text/css" >
+  </head>
+
+  <body >
+      <div class="container">
+        <form method="POST" class="form-signin" action="/login/iniciar">
+            {% csrf_token %}
+            <h1 class="h3 mb-3 font-weight-normal text-center">Iniciar Sesión</h1>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="inputEmail">Run</label>
+                        <input type="text" name="run" class="form-control" placeholder="Run" required autofocus>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="inputPassword">Contraseña</label>
+                        <input type="password" name="contrasenia" class="form-control" placeholder="Contraseña" required>
+                    </div>
+                </div>
+            </div>        
+          
+          <a href="/login/recover" class="text-center">Recuperar Contraseña</a>
+          <div class="checkbox mb-3">
+          
+          </div>
+          <button class="btn btn-lg btn-primary btn-block" type="submit">Iniciar Sesión</button>
+          <p class="mt-5 mb-3 text-muted text-center">&copy; 2017-2018</p>
+        </form>
+        <p class="text-center">{{contrasenia}}</p>
+      </div>
+  </body>
+</html>

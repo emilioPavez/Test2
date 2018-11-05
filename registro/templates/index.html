@@ -25,25 +25,56 @@
                   
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mr-auto">
-                        <li class="nav-item">
-                            <a class="nav-link btn btn-navbar" href="#">Inicio <span class="sr-only">(current)</span></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link btn btn-navbar" href="#rescatados">Quienes Somos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link btn btn-navbar" href="#servicios">Servicios</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link btn btn-navbar" href="#redesSociales">Contáctanos</a>
-                        </li>
+                        {% if usuario is not null %} 
+                            {% if request.user.is_superuser %}
+                                <li class="nav-item">
+                                    <a class="nav-link btn btn-navbar" href="#">Inicio <span class="sr-only">(current)</span></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link btn btn-navbar" href="#formularioPerro">Mantenedor perros</a>
+                                </li>
+                                <li class="nav-item">
+                                   <a class="nav-link btn btn-navbar" href="#postulantess">Postulantes</a>
+                                </li>
+                            {% else %}
+                                <li class="nav-item">
+                                    <a class="nav-link btn btn-navbar" href="#">Inicio <span class="sr-only">(current)</span></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link btn btn-navbar" href="#disponibles">Disponible</a>
+                                </li>
+                            
+                            {% endif %}
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link btn btn-navbar" href="#">Inicio <span class="sr-only">(current)</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link btn btn-navbar" href="#rescatados">Quienes Somos</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link btn btn-navbar" href="#servicios">Servicios</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link btn btn-navbar" href="#redesSociales">Contáctanos</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle btn-navbar" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Galeria</a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="#disponibles">Disponible</a>
+                                    <a class="dropdown-item" href="#adoptados">Adoptado</a>
+                                    <a class="dropdown-item" href="#rescatados">Rescatado</a>
+                                </div>
+                            <li>
+                        {% endif %}
+                        
                     </ul>
                     <form class="form-inline my-2 my-lg-0">
-                        {% if user.is_authenticated %}
-                            <li class="nav-item">Bienvenido {{usuario}} <a href="{% url "cerrar_session" %}">Cerrar Sesión</a> </li>
+                        {% if usuario is not null %}  
+                            <li class="nav-item">Bienvenido {{usuario}} <a class="btn btn-danger" href="{% url "cerrar_session" %}">Cerrar Sesión</a> </li>
                             {% else %}
-                            <a class="nav-link btn btn-navbar" href="#" >Iniciar Sesión</a>
-                            <a class="nav-link btn btn-navbar" href="#formulario" id="mostrar">Registrarse</a>
+                            <a class="btn btn-success" href="{% url "login"%}" >Iniciar Sesión</a>
+                            <a class="btn btn-info" href="#formulario" id="mostrar">Registrarse</a>
                         {% endif %}
                     </form>
                 </div>
@@ -55,36 +86,33 @@
             <div class="row">
                 <div class="col-md-12">
                     <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-                        <ol class="carousel-indicators">
-                            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-                            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-                            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-                        </ol>
+
+
                         <div class="carousel-inner">
-                            <div class="carousel-item active">
-                                <img class="d-block w-100 center-cropped rounded mx-auto" src="{% static "img/adoptados/Apolo.jpg" %}" alt="Apolo">
-                                <div class="carousel-caption">
-                                    <!--Testimonio-->
-                                    <p>"Estamos felices de poder adoptar a Apolo en nuestro hogar."</p>
-                                    <!--Testimonio-->
-                                </div>
-                            </div>
-                            <div class="carousel-item">
-                                <img class="d-block w-100 center-cropped rounded mx-auto " src="{% static "img/adoptados/Duque.jpg" %}" alt="Duque">
-                                <div class="carousel-caption">
-                                    <!--Testimonio-->
-                                    <p>"Estamos felices de poder adoptar a Duque en nuestro hogar."</p>
-                                    <!--Testimonio-->
-                                </div>
-                            </div>
-                            <div class="carousel-item">
-                                <img class="d-block w-100 center-cropped rounded mx-auto" src="{% static "img/adoptados/Tom.jpg" %}" alt="Tom">
-                                <div class="carousel-caption">
-                                    <!--Testimonio-->
-                                    <p>"Estamos felices de poder integrar a nuestra familia a Tom."</p>
-                                    <!--Testimonio-->
-                                </div>
-                            </div>
+                            {% for p in perros %}
+                                {% if p.estado == 'Disponible' %}
+                                    {% if n == 1 %}
+                                    <div class="carousel-item active">
+                                        <img class="d-block w-100 center-cropped rounded mx-auto" src="/media/{{p.foto}}" alt="{{p.nombre}}">
+                                        <div class="carousel-caption">
+                                            
+                                            <p>"{{p.descripcion}}"</p>
+                                            
+                                        </div>
+                                    </div>
+                                    {% else %}
+                                        <div class="carousel-item">
+                                            <img class="d-block w-100 center-cropped rounded mx-auto" src="/media/{{p.foto}}" alt="{{p.nombre}}">
+                                            <div class="carousel-caption">
+                                                
+                                                <p>"{{p.descripcion}}"</p>
+                                                
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    
+                                {% endif %} 
+                            {% endfor %} 
                         </div>
                         <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -151,16 +179,22 @@
         </div>
         <!--Fin Informacion de la pagina-->
         
-        <!--Formulario-->
+        <!--Formulario Postulante-->
         <div class="container">
-            <form action="{% url 'crear' %}" id="formulario" method="POST">
+            <form action="/postulante/crear" id="formulario" method="POST">
             {% csrf_token %}
             <h1>Registro de Postulante</h1>
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Run</label>
-                        <input required type="text" class="form-control" name="run" placeholder="Ingrese Rut 12345678-9">
+                        <input required type="text" class="form-control" name="run" placeholder="Ingrese Run 12345678-9">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Contraseña</label>
+                        <input required type="password" class="form-control" name="contrasenia" placeholder="Ingrese Contraseña">
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -169,14 +203,14 @@
                         <input required type="text" class="form-control" name="nombre" placeholder="Ingrese nombre completo">
                     </div>
                 </div>
+            </div>
+            <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Fecha de Nacimiento</label>
                         <input required type="date" class="form-control" name="fechaNacimiento" >
                     </div>
                 </div>
-            </div>
-            <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Correo Electrónico</label>
@@ -186,25 +220,12 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Teléfono</label>
-                        <input type="number" class="form-control" name="telefono" placeholder="Ingrese teléfono de contacto">
+                        <input type="number" maxlength="9" minlength="8" class="form-control" name="telefono" placeholder="Ingrese teléfono de contacto">
                     </div>
                 </div>
-                <div class="co     <form action="/registro/crearperro" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-
-        <label for="imagenperro">ImagenPerro</label>
-        <input type="file" class="form-control" name="imagenperro">
-        <label for="nombre">Nombre</label>
-        <input type="text" name="nombre" placeholder="nombre">
-        <label for="Razaperro">Raza</label>
-        <input type="text" name="Raza" placeholder="Raza">
-        <label for="Descripción">Descripción</label>
-        <input type="text" name="Descripción" placeholder="Descripción">
-        <label for="Estado">Estado</label>
-        <input type="text" name="Estado" placeholder="Estado">
-
-        <input type="submit" value="Guardar">
-    </form>l-md-4">
+            </div>
+            <div class="row">
+                <div class="col-md-4">
                     <div class="form-group">
                         <label for="region">Región</label>
                         <select required class="form-control" name="region" id="region">
@@ -212,8 +233,6 @@
                         </select>
                     </div>
                 </div>
-            </div>
-            <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="comuna">Comuna</label>
@@ -235,7 +254,6 @@
                     </div>
                 </div>
             </div>
-            
             <div class="row">
                 <div class="col-md-4">
                     <button type="reset" class="btn btn-danger btn-block">Limpiar</button>
@@ -248,11 +266,14 @@
                 </div>
             </div>
             </form>
+            <h6>{{mensaje}}</h6>
         </div>
-        <!--Fin Formulario-->
-        
+        <!--Formulario Postulante-->
+
+        {% if usuario is not null %} 
+            {% if request.user.is_superuser %}
         <!--Mostrar Inscritos-->
-        <div class="container" >
+        <div class="container" id="postulantess" >
             <h2>Postulantes</h2>
             <div class="table-responsive">
                 <table class="table table-striped">
@@ -264,9 +285,14 @@
                             <th scope="col">Fecha</th>
                             <th scope="col">Correo</th>
                             <th scope="col">Telefono</th>
-                            <th scope="col">Region</th>
+                            <th scope="col">Region</th> 
                             <th scope="col">Comuna</th>
                             <th scope="col">Tipo Vivienda</th>
+                            <th scope="col">Contraseña</th>
+                            <!--{% if usuario is not null %}-->
+                            
+                            <!--{% endif %}-->
+                            <th scope="col">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -281,204 +307,186 @@
                             <td>{{p.region}}</td>
                             <td>{{p.comuna}}</td>
                             <td>{{p.vivienda}}</td>
-                                
+                            <td>{{p.contrasenia}}</td>
+                            
+                            <!--{% if usuario is not null %}-->
+                            
+                            <!--{% endif %}-->
+                            
+                            <td> <a href="/postulante/eliminar/{{p.id}}">Borrar</a> </td>
                         </tr>
                         {% endfor %}                  
                     </tbody>
                 </table>
             </div>
         </div>
-
-
-                <div class="container">
-            <form action="{% url 'crearperro' %}" id="formulario" method="POST" enctype="multipart/form-data">
+            {% endif %}
+        {% endif %}
+        <!--Fin Mostrar Elementos-->
+        
+        {% if usuario is not null %} 
+            {% if request.user.is_superuser %}
+        <!--Formulario Perro-->
+        <div class="container">
+            <form action="{% url 'crear_perro' %}" id="formularioPerro" enctype="multipart/form-data" method="POST">
             {% csrf_token %}
-            <h1>Registro de Perro</h1>
+            <h1>Registro de perro</h1>
             <div class="row">
-                <input type="file" name="myfile" class="form-control" name="imagenperro">
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label>Nombre Perro</label>
-                        <input required type="text" class="form-control" name="nombreperro" placeholder="ingrese nombre del perro">
+                        <label for="foto">Fotografia</label>
+                        <input required type="file" class="form-control" name="foto" id="foto" placeholder="Seleccione Fotografia">
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label>Raza perro</label>
-                        <input required type="text" class="form-control" name="Razaperro" placeholder="Ingrese Raza predominante">
+                        <label>Nombre</label>
+                        <input required type="text" class="form-control" name="nombre" placeholder="Ingrese nombre">
                     </div>
                 </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Raza</label>
+                        <input required type="text" class="form-control" name="raza" placeholder="Ingrese Raza" >
+                    </div>
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Descripción</label>
-                        <input required type="text" class="form-control" name="Descripción" >
+                        <input required type="text" class="form-control" name="descripcion" placeholder="Ingrese Descripción">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Estado</label>
+                        <select required class="form-control" name="estado">
+                            <option hidden value="">Seleccione Estado</option>
+                            <option value="Rescatado">Rescatado</option>
+                            <option value="Disponible">Disponible</option>
+                            <option value="Adoptado">Adoptado</option>
+                        </select>
                     </div>
                 </div>
             </div>
-         <div class="row">
-                <div class="col-md-4">
+            <div class="row">
+                <div class="col-md-6">
                     <button type="reset" class="btn btn-danger btn-block">Limpiar</button>
                 </div>
-                <div class="col-md-4">
-                    <button type="button" class="btn btn-outline-info btn-block" id="ocultar">Ocultar</button>
-                </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <input type="submit" class="btn btn-success btn-block" value="Guardar">
                 </div>
             </div>
+            </form>
         </div>
-    </form>
+        <!--Fin Formulario Perro-->
 
-    <div class="container" >
+        <!--Mostrar Perros-->
+        <div class="container" id="perritos" >
             <h2>Perros</h2>
             <div class="table-responsive">
                 <table class="table table-striped">
                     <thead class="thead-dark">
                         <tr>
-                            <th scope="col">Imagen</th>
+                            <th scope="col">Id</th>
+                            <th scope="col">Foto</th>
                             <th scope="col">Nombre</th>
                             <th scope="col">Raza</th>
                             <th scope="col">Descripción</th>
                             <th scope="col">Estado</th>
+                            <th scope="col">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for p in perro %}
+                        {% for p in perros %}
                         <tr>
-                            <th scope="row">{{p.imagenperro}}</th>
-                            <td>{{p.nombreperro}}</td>
-                            <td>{{p.Razaperro}}</td>
-                            <td>{{p.Descripción}}</td>
-                            <td>{{p.Estado}}</td>
-                                
+                            <th scope="row">{{p.id}}</th>
+                            <td><img src="/media/{{p.foto}}" alt="no foto" height="100" srcset=""></td>
+                            <td>{{p.nombre }}</td>
+                            <td>{{p.raza}}</td>
+                            <td>{{p.descripcion}}</td>
+                            <td>{{p.estado}}</td>
+                            <td><a href="/perro/editar/{{p.id}}">Editar</a> <a href="/perro/eliminar/{{p.id}}">Borrar</a> </td>
                         </tr>
                         {% endfor %}                  
                     </tbody>
                 </table>
             </div>
         </div>
-        <!--Fin Mostrar Elementos-->
+        <!--Fin Mostrar Perros-->
+            {% endif %}
+        {% endif %} 
 
-        <!--Gallery-->
-        <div class="container-fluid" style="background-color: rgb(133, 212, 183);" id="rescatados"> 
+        <!--Gallery Disponible-->
+        <div class="container-fluid" style="background-color: rgb(133, 212, 183);" id="disponibles"> 
             <div class="container">
+                <h1>Galeria perros disponibles</h1>
                 <div id="masonry">
-                    <div class="item hovereffect">
-                        <img src="{% static "img/rescatados/Chocolate_tn.jpg" %}" alt="Chocolate_tn" />
-                        <div class="overlay">
-                            <h2>Chocolate_tn</h2>
-                            <p>Perro muy tierno 3 años, con todas sus vacunas y documentos.</p>
-                            <!--<a class="info" href="#">Ver imagen</a>-->
-                        </div>
-                    </div>
-                    <div class="item hovereffect">
-                        <img src="{% static "img/rescatados/Bigotes.jpg" %}" alt="Bigotes" />
-                        <div class="overlay">
-                            <h2>Bigotes</h2>
-                            <p>2 años, muy amoroso y cariñoso, le encanta jugar.</p>
-                        </div>
-                    </div>
-                    <div class="item hovereffect">
-                        <img src="{% static "img/rescatados/Bigotes_tn.jpg" %}" alt="Bigotes_tn" />
-                        <div class="overlay">
-                            <h2>Bigotes_tn</h2>
-                            <p>Muy tierno le encanta jugar con peluches, pelota, todo lo que este
-                                a su alcance.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="item hovereffect">
-                        <img src="{% static "img/rescatados/Chocolate.jpg" %}" alt="Chocolate" />
-                        <div class="overlay">
-                            <h2>Chocolate</h2>
-                            <p>Un poco mañoso y muy inquieto, le gusta pelear</p>
-                        </div>
-                    </div>
-                    <div class="item hovereffect">
-                        <img src="{% static "img/rescatados/Luna.jpg" %}" alt="Luna" />
-                        <div class="overlay">
-                            <h2>Luna</h2>
-                            <p>Muy tierna, es realmente un amor le encanta dormirse en las
-                                piernas de quien la sostenga.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="item hovereffect">
-                        <img src="{% static "img/rescatados/Luna_tn.jpg" %}" alt="Luna_tn" />
-                        <div class="overlay">
-                            <h2>Luna_tn</h2>
-                            <p>Adorable perrita, muy juguetona y tranquila.</p>
-                        </div>
-                    </div>
-                    <div class="item hovereffect">
-                        <img src="{% static "img/rescatados/Maya.jpg" %}" alt="Maya" />
-                        <div class="overlay">
-                            <h2>Maya</h2>
-                            <p>Le gusta jugar mucho le encantan las pelotas y cosas para morder.</p>
-                        </div>
-                    </div>
-                    <div class="item hovereffect">
-                        <img src="{% static "img/rescatados/Maya_tn.jpg" %}" alt="Maya_tn" />
-                        <div class="overlay">
-                            <h2>Maya_tn</h2>
-                            <p>Perra muy inquieta, nunca deja dormir a nadie por que 
-                                siempre quiere estar jugando.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="item hovereffect">
-                        <img src="{% static "img/rescatados/Oso.jpg" %}" alt="Oso" />
-                        <div class="overlay">
-                            <h2>Oso</h2>
-                            <p>Muy adorable, le encanta dormir y comer.</p>
-                        </div>
-                    </div>
-                    <div class="item hovereffect">
-                        <img src="{% static "img/rescatados/Oso_tn.jpg" %}" alt="Oso_tn" />
-                        <div class="overlay">
-                            <h2>Oso_tn</h2>
-                            <p>Perro muy tranquilo, bonito y muy jugueton.</p>
-                        </div>
-                    </div>
-                    <div class="item hovereffect">
-                        <img src="{% static "img/rescatados/Pexel.jpg" %}" alt="Pexel" />
-                        <div class="overlay">
-                            <h2>Pexel</h2>
-                            <p>Es un perro muy gruñon, inquieto y peleador.</p>
-                        </div>
-                    </div>
-                    <div class="item hovereffect">
-                        <img src="{% static "img/rescatados/Pexel_tn.jpg" %}" alt="Pexel_tn" />
-                        <div class="overlay">
-                            <h2>Pexel_tn</h2>
-                            <p>Es muy amoroso, le encanta comer carne y jugar.</p>
-                        </div>
-                    </div>
-                    <div class="item hovereffect">
-                        <img src="{% static "img/rescatados/Wifi.jpg" %}" alt="Wifi" />
-                        <div class="overlay">
-                            <h2>Wifi</h2>
-                            <p>Es muy lindo y le encanta salir a pasear al parque,
-                                es jugueton y muy tierno.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="item hovereffect">
-                        <img src="{% static "img/rescatados/Wifi_tn.jpg" %}" alt="Wifi_tn" />
-                        <div class="overlay">
-                            <h2>Wifi_tn</h2>
-                            <p>Es muy buen amigo, con el puedes salir a trotar y te seguirá
-                                hasta donde vallas, es muy fiel.
-                            </p>
-                        </div>
-                    </div>
+                    {% for p in perros %}
+                        {% if p.estado == 'Disponible' %}
+                            <div class="item hovereffect">
+                                <img src="/media/{{p.foto}}" alt="{{p.nombre}}" />
+                                <div class="overlay">
+                                    <h2>{{p.nombre}}</h2>
+                                    <p>{{p.descripcion}}</p>
+                                    <a class="info" href="#">Adoptar</a>
+                                </div>
+                            </div>   
+                        {% endif %} 
+                    {% endfor %}                 
+
                 </div>
             </div>
         </div>
-        <!--Fin Gallery-->
+        <!--Fin Gallery Disponible-->
+        <br>
+        <!--Gallery Adoptados-->
+        <div class="container-fluid" style="background-color: rgb(133, 212, 183);" id="adoptados"> 
+            <div class="container">
+                <h1>Galeria perros adoptados</h1>
+                <div id="masonry">
+                    {% for p in perros %}
+                        {% if p.estado == 'Adoptado' %}
+                            <div class="item hovereffect">
+                                <img src="/media/{{p.foto}}" alt="{{p.nombre}}" />
+                                <div class="overlay">
+                                    <h2>{{p.nombre}}</h2>
+                                    <p>{{p.descripcion}}</p>
+                                </div>
+                            </div>   
+                        {% endif %} 
+                    {% endfor %}                 
+    
+                </div>
+            </div>
+        </div>
+        <!--Fin Gallery Adoptados-->
+        <br>
+        <!--Gallery Rescatados-->
+        <div class="container-fluid" style="background-color: rgb(133, 212, 183);" id="rescatados"> 
+            <div class="container">
+                <h1>Galeria perros rescatados</h1>
+                <div id="masonry">
+                    {% for p in perros %}
+                        {% if p.estado == 'Rescatado' %}
+                            <div class="item hovereffect">
+                                <img src="/media/{{p.foto}}" alt="{{p.nombre}}" />
+                                <div class="overlay">
+                                    <h2>{{p.nombre}}</h2>
+                                    <p>{{p.descripcion}}</p>
+                                </div>
+                            </div>   
+                        {% endif %} 
+                    {% endfor %}                 
+                </div>
+            </div>
+        </div>
+        <!--Fin Gallery Rescatados-->
+
         <footer >
             <div class="container-fluid" style="background-color:#e6e6e6;">
-                <h1>Desarrollo web y mobile</h1>
+                <h6>Desarrollo web y mobile</h6>
             </div>
         </footer>
 

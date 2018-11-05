@@ -1,0 +1,50 @@
+!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Edita Perro</title>
+        {% load static %}
+        <link rel="stylesheet" href="{% static "css/bootstrap.css" %}" type="text/css" >
+        <link rel="stylesheet" href="{% static "css/estilo.css" %}" type="text/css">
+    </head>
+    <body>
+        
+        <div class="container">
+            <h1>Recuperación Contraseña</h1>
+            <form action="/login/recuperado" id="formulario" enctype="multipart/form-data" method="POST">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="foto">Run</label>
+                        <input required type="text" class="form-control"name="run" placeholder="Ingrese Run">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Contraseña nueva</label>
+                        <input required type="password" class="form-control" name="contrasenia" placeholder="Ingrese Contraseña">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Confirme Contraseña</label>
+                        <input required type="password" class="form-control" name="contrasenia2" placeholder="Ingrese Contraseña" >
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <button type="reset" class="btn btn-danger btn-block">Limpiar</button>
+                </div>
+                <div class="col-md-6">
+                    <input type="submit" class="btn btn-success btn-block" value="Cambiar Contraseña">
+                </div>
+            </div>
+            </form>
+            <h6>{{contrasenia}}</h6>
+        </div>
+    </body>
+</html>
