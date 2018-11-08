@@ -25,9 +25,10 @@ def crear(request):
     vivienda = request.POST.get('tipoVivienda','')
     contrasenia = request.POST.get('contrasenia','')
     
+    
     postulante = Postulante.objects.get(run=run)
     if postulante is None:
-        postulante = Postulante(run=run, nombre=nombre, fecha=fecha, correo=correo, telefono=telefono, region=region, comuna=comuna, vivienda=vivienda, contrasenia= contrasenia)
+        postulante = Postulante(run=run, nombre=nombre, fecha=fecha, correo=correo, telefono=telefono, region=region, comuna=comuna, vivienda=vivienda, contrasenia=contrasenia)
         postulante.save()
         return render(request,'index.html',{'mensaje':'Creado.'})
     else:
@@ -77,8 +78,10 @@ def editar_perro(request,id):
     return render(request, 'editarPerro.html', {'perro':perro})
 
 def editado_perro(request,id):
+    #aqui se le otorga ID al perro para la busqueda en BD
     perro = Perro.objects.get(pk=id)
 
+    #Luego vamos con los otros datos necesarios para la BD
     foto = request.FILES.get('foto',False)
     nombre = request.POST.get('nombre','')
     raza = request.POST.get('raza','')
@@ -99,11 +102,11 @@ def login(request):
 def login_iniciar(request):
     run = request.POST.get('run','')
     contrasenia = request.POST.get('contrasenia','')
-    user = authenticate(request,username=usuario, password=contrasenia)
+    #user = authenticate(request,username=usuario, password=contrasenia)
     postulante = Postulante.objects.filter(run=run).filter(contrasenia=contrasenia)
 
     if postulante is not None:
-        auth_login(request, user)
+        #auth_login(request, user)
         request.session['usuario'] = postulante[0].nombre
         request.session['id'] = postulante[0].id
         return redirect("index")
